@@ -42,7 +42,6 @@ function App() {
     <div style={{ padding: '24px', fontFamily: 'sans-serif', maxWidth: '700px', margin: '0 auto', backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
       <h1 style={{ color: '#1c7ed6', marginBottom: '20px' }}>Campus Priority Inbox — Dashboard</h1>
       
-      {/* Interactive Controls Panel */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap', backgroundColor: '#fff', padding: '16px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
         <div>
           <label style={{ marginRight: '8px', fontWeight: 'bold' }}>Items per Page:</label>
@@ -64,7 +63,6 @@ function App() {
         </div>
       </div>
 
-      {/* Main Timeline View */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '40px', fontSize: '18px' }}>Updating inbox list...</div>
       ) : (
@@ -99,7 +97,6 @@ function App() {
             ))
           )}
 
-          {/* Pagination Navigation Footer */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', backgroundColor: '#fff', padding: '12px', borderRadius: '8px' }}>
             <button disabled={page === 1} onClick={() => setPage(p => p - 1)} style={{ padding: '8px 16px', borderRadius: '4px', cursor: page === 1 ? 'not-allowed' : 'pointer' }}>
               Previous Page
