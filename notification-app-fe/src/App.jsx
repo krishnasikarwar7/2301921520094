@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Log } from './utils/logger';
 
 function App() {
   const [notifications, setNotifications] = useState([]);
@@ -11,32 +12,33 @@ function App() {
   const [typeFilter, setTypeFilter] = useState(''); 
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      setLoading(true);
-      try {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJjc2FpMjMwODVAZ2xiaXRtLmFjLmluIiwiZXhwIjoxNzgyNDU0NzkzLCJpYXQiOjE3ODI0NTM4OTMsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiI4Njc5NDliNC1hYzBjLTRkNjQtYTk2Yy0yOGFkOTNlNDBmMzYiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJrcmlzaG5hIHNpbmdoIHNpa2Fyd2FyIiwic3ViIjoiZTczOWIwZWUtYjY4OC00MDhhLWEwNTItNDM1ZGY2NzQ4ZTc2In0sImVtYWlsIjoiY3NhaTIzMDg1QGdsYml0bS5hYy5pbiIsIm5hbWUiOiJrcmlzaG5hIHNpbmdoIHNpa2Fyd2FyIiwicm9sbE5vIjoiMjMwMTkyMTUyMDA5NCIsImFjY2Vzc0NvZGUiOiJ4eGtKbmsiLCJjbGllbnRJRCI6ImU3MzliMGVlLWI2ODgtNDA4YS1hMDUyLTQzNWRmNjc0OGU3NiIsImNsaWVudFNlY3JldCI6ImR5WVFyeWJiRGJWRFVCQ1oifQ.shiUHz2VFfmi5ArjOXU6pH52aPayVpoGRZUm4wl2138"; 
-        
-        let queryParams = `?limit=${limit}&page=${page}`;
-        if (typeFilter) {
-          queryParams += `&notification_type=${typeFilter}`;
-        }
+  const fetchNotifications = async () => {
+    setLoading(true);
+    Log("info", "api", "Initiating campus notifications fetch payload.");
 
-        const response = await axios.get(`http://4.224.186.213/evaluation-service/notifications${queryParams}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        setNotifications(response.data.notifications || []);
-      } catch (error) {
-        console.error("Failed fetching paginated data streams:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJjc2FpMjMwODVAZ2xiaXRtLmFjLmluIiwiZXhwIjoxNzgyNDU2NDYyLCJpYXQiOjE3ODI0NTU1NjIsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiJkOGJiYmI1My05NzU5LTQ5NWQtYTkyOC0zMmEzMmQyYmFjMDUiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJrcmlzaG5hIHNpbmdoIHNpa2Fyd2FyIiwic3ViIjoiZTczOWIwZWUtYjY4OC00MDhhLWEwNTItNDM1ZGY2NzQ4ZTc2In0sImVtYWlsIjoiY3NhaTIzMDg1QGdsYml0bS5hYy5pbiIsIm5hbWUiOiJrcmlzaG5hIHNpbmdoIHNpa2Fyd2FyIiwicm9sbE5vIjoiMjMwMTkyMTUyMDA5NCIsImFjY2Vzc0NvZGUiOiJ4eGtKbmsiLCJjbGllbnRJRCI6ImU3MzliMGVlLWI2ODgtNDA4YS1hMDUyLTQzNWRmNjc0OGU3NiIsImNsaWVudFNlY3JldCI6ImR5WVFyeWJiRGJWRFVCQ1oifQ.Z1Yyg1vyzmfBNJZ0HJB68GBPZno4fDW6HrJqOFdlOjk";
+      let queryParams = `?limit=${limit}&page=${page}`;
+      if (typeFilter) queryParams += `&notification_type=${typeFilter}`;
 
-    fetchNotifications();
-  }, [limit, page, typeFilter]); 
+      const response = await axios.get(`http://4.224.186.213/evaluation-service/notifications${queryParams}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      setNotifications(response.data.notifications || []);
+      
+      Log("debug", "state", `Successfully updated notifications state with ${response.data.notifications?.length} items.`);
+
+    } catch (error) {
+      Log("error", "middleware", `API execution pipeline caught failure: ${error.message}`);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchNotifications();
+}, [limit, page, typeFilter]);
 
   return (
     <div style={{ padding: '24px', fontFamily: 'sans-serif', maxWidth: '700px', margin: '0 auto', backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
